@@ -1,0 +1,100 @@
+Index: resources/js/Pages/Auth/Login.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><script setup>\nimport { Head, Link, useForm } from '@inertiajs/vue3';\nimport LoginForm from '@/Components/auth/LoginForm.vue';\nimport ApplicationLogo from '@/Components/ApplicationLogo.vue';\n</script>\n\n<template>\n    <Head title=\"Login\" />\n        <div class=\"authentication\">\n            <v-container fluid class=\"pa-3\">\n                <v-row class=\"h-100vh d-flex justify-center align-center\">\n                    <v-col cols=\"12\" lg=\"4\" xl=\"3\" class=\"d-flex align-center\">\n                        <v-card rounded=\"md\" elevation=\"10\" class=\"px-sm-1 px-0 withbg mx-auto\" max-width=\"500\">\n                            <v-card-item class=\"pa-sm-8\">\n                                <div class=\"d-flex justify-center py-4\">\n                                    <ApplicationLogo />\n                                </div>\n                                <div class=\"text-body-1 text-muted text-center mb-3\">Sistema de Acompanhamento de Atividades Docentes</div>\n                                <LoginForm />\n                                <h6 class=\"text-h6 text-muted font-weight-medium d-flex justify-center align-center mt-3\">\n                                    New to Modernize?\n                                    <Link href=\"register\"\n                                        class=\"text-primary text-decoration-none text-body-1 opacity-1 font-weight-medium pl-2\">\n                                        Create an account</Link>\n                                </h6>\n                            </v-card-item>\n                        </v-card>\n                    </v-col>\n                </v-row>\n            </v-container>\n        </div>\n\n</template>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/resources/js/Pages/Auth/Login.vue b/resources/js/Pages/Auth/Login.vue
+--- a/resources/js/Pages/Auth/Login.vue	
++++ b/resources/js/Pages/Auth/Login.vue	
+@@ -17,12 +17,12 @@
+                                 </div>
+                                 <div class="text-body-1 text-muted text-center mb-3">Sistema de Acompanhamento de Atividades Docentes</div>
+                                 <LoginForm />
+-                                <h6 class="text-h6 text-muted font-weight-medium d-flex justify-center align-center mt-3">
+-                                    New to Modernize?
+-                                    <Link href="register"
+-                                        class="text-primary text-decoration-none text-body-1 opacity-1 font-weight-medium pl-2">
+-                                        Create an account</Link>
+-                                </h6>
++<!--                                <h6 class="text-h6 text-muted font-weight-medium d-flex justify-center align-center mt-3">-->
++<!--                                    New to Modernize?-->
++<!--                                    <Link href="register"-->
++<!--                                        class="text-primary text-decoration-none text-body-1 opacity-1 font-weight-medium pl-2">-->
++<!--                                        Create an account</Link>-->
++<!--                                </h6>-->
+                             </v-card-item>
+                         </v-card>
+                     </v-col>
+Index: routes/web.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nuse App\\Http\\Controllers\\ProfileController;\nuse App\\Http\\Controllers\\Sigaa\\AusenciaController;\nuse App\\Http\\Controllers\\Sigaa\\ComponenteCurricularController;\nuse App\\Http\\Controllers\\Sigaa\\DesignacaoController;\nuse App\\Http\\Controllers\\Sigaa\\OrientacaoGraduacaoController;\nuse App\\Http\\Controllers\\Sigaa\\OrientacaoPosGraduacaoController;\nuse App\\Http\\Controllers\\Sigaa\\ProjetoController;\nuse App\\Models\\Administrativo\\Ausencia;\nuse App\\Http\\Controllers\\Sigaa\\EncargoAdministrativoController;\nuse App\\Http\\Controllers\\Sigaa\\PlanoAcademicoController;\nuse Illuminate\\Support\\Facades\\Route;\nuse Inertia\\Inertia;\n\n/*\n|--------------------------------------------------------------------------\n| Web Routes\n|--------------------------------------------------------------------------\n|\n| Here is where you can register web routes for your application. These\n| routes are loaded by the RouteServiceProvider within a group which\n| contains the \"web\" middleware group. Now create something great!\n|\n*/\n\nRoute::prefix('sigaa')->group(function () {\n    Route::get('/projetos', [ProjetoController::class, 'index'])->name('sigaa.projetos.index');\n    Route::get('/planos-academicos', [PlanoAcademicoController::class, 'index'])->name('sigaa.planoAcademico.index');\n    Route::get('/encargo_administrativo', [EncargoAdministrativoController::class, 'index'])->name('sigaa.encargoAdministrativo.index');\n    Route::get('/componentes-curriculares', [ComponenteCurricularController::class, 'index'])->name('sigaa.componentesCurriculares.index');\n    Route::get('/orientacoes/graduacao', [OrientacaoGraduacaoController::class, 'index'])->name('sigaa.orientacoes.graduacao.index');\n    Route::get('/orientacoes/posgraduacao', [OrientacaoPosGraduacaoController::class, 'index'])->name('sigaa.orientacoes.posgraduacao.index');\n    Route::get('/designacoes', [DesignacaoController::class, 'index'])->name('sigaa.designacoes.index');\n    Route::get('/ausencias', [AusenciaController::class, 'index'])->name('sigaa.ausencias.index');\n});\n\nRoute::get('/', function () {\n    return redirect()->route('login');\n    /*return Inertia::render('Welcome', [\n        'canLogin' => Route::has('login'),\n        'canRegister' => Route::has('register'),\n        'laravelVersion' => Application::VERSION,\n        'phpVersion' => PHP_VERSION,\n    ]);*/\n});\n\nRoute::get('/register', function () {\n    return redirect()->route('register');\n});\n\n\nRoute::get('/dashboard', function () {\n    return Inertia::render('Dashboard');\n})->middleware(['auth', 'verified'])->name('dashboard');\n\nRoute::middleware('auth')->group(function () {\n    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');\n    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');\n    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');\n});\n\nrequire __DIR__.'/auth.php';\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/routes/web.php b/routes/web.php
+--- a/routes/web.php	
++++ b/routes/web.php	
+@@ -45,9 +45,9 @@
+     ]);*/
+ });
+ 
+-Route::get('/register', function () {
+-    return redirect()->route('register');
+-});
++//Route::get('/register', function () {
++//    return redirect()->route('register');
++//});
+ 
+ 
+ Route::get('/dashboard', function () {
+Index: app/Models/Sigaa/saad/EncargoAdministrativo.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nnamespace App\\Models\\Sigaa\\saad;\n\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Database\\Eloquent\\Model;\nuse Illuminate\\Database\\Eloquent\\Relations\\BelongsTo;\nuse Illuminate\\Database\\Eloquent\\Relations\\HasMany;\n\nclass EncargoAdministrativo extends Model\n{\n    use HasFactory;\n//    protected $primaryKey = 'id_encargos_administrativos';\n//    protected $connection = 'sigaa';\n//    protected $table = 'saad.encargo_administrativo';\n    protected $table = 'encargos_adminstrativos';\n\n\n    public  function  tipoEncargos(): BelongsTo{\n        return  $this->BelongsTo(TiposEncargosAdminstrativos::class);\n    }\n\n    protected $fillable = [\n        'unidade_Id',\n        'data_inicio',\n        'data_fim',\n        'funcao',\n        'ch_semanal',\n        'portaria',\n        'arquivo_portaria',\n        'servidor_id',\n    ];\n}\n
+===================================================================
+diff --git a/app/Models/Sigaa/saad/EncargoAdministrativo.php b/app/Models/Sigaa/saad/EncargoAdministrativo.php
+--- a/app/Models/Sigaa/saad/EncargoAdministrativo.php	
++++ b/app/Models/Sigaa/saad/EncargoAdministrativo.php	
+@@ -2,9 +2,11 @@
+ 
+ namespace App\Models\Sigaa\saad;
+ 
++use App\Models\Sigaa\Rit;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Database\Eloquent\Model;
+ use Illuminate\Database\Eloquent\Relations\BelongsTo;
++use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+ use Illuminate\Database\Eloquent\Relations\HasMany;
+ 
+ class EncargoAdministrativo extends Model
+@@ -20,6 +22,10 @@
+         return  $this->BelongsTo(TiposEncargosAdminstrativos::class);
+     }
+ 
++    public function  rit() {
++        return  $this->belongsToMany(Rit::class);
++    }
++
+     protected $fillable = [
+         'unidade_Id',
+         'data_inicio',
+Index: app/Models/Sigaa/saad/PlanoAcademicos.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nnamespace App\\Models\\Sigaa\\saad;\n\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass PlanoAcademicos extends Model\n{\n    use HasFactory;\n//\n//    protected $primaryKey = 'id_plano_academico';\n//    protected $connection = 'sigaa';\n//    protected $table = 'saad.plano_academico';\n//    public $timestamps = false;\n    protected $table = 'plano_academico';\n    protected $fillable = [\n        'descricao',\n        'data_inicio',\n        'data_fim',\n        'ativo',\n        'ano',\n        'periodo_intensivo', // 3, 4\n        'periodo_extensivo', // 1 ,2\n        'pit_inicio',\n        'pit_fim',\n        'rit_inicio',\n        'rit_fim',\n    ];\n\n\n}\n
+===================================================================
+diff --git a/app/Models/Sigaa/saad/PlanoAcademicos.php b/app/Models/Sigaa/saad/PlanoAcademicos.php
+--- a/app/Models/Sigaa/saad/PlanoAcademicos.php	
++++ b/app/Models/Sigaa/saad/PlanoAcademicos.php	
+@@ -14,6 +14,8 @@
+ //    protected $table = 'saad.plano_academico';
+ //    public $timestamps = false;
+     protected $table = 'plano_academico';
++
++
+     protected $fillable = [
+         'descricao',
+         'data_inicio',

@@ -1,0 +1,50 @@
+Index: resources/js/Layouts/full/vertical-sidebar/sidebarItem.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {\n  MenuIcon,\n  CircleIcon,\n  CircleOffIcon,\n  BrandChromeIcon,\n  MoodSmileIcon,\n  StarIcon,\n  AwardIcon\n} from 'vue-tabler-icons';\n\nexport interface menu {\n  header?: string;\n  title?: string;\n  icon?: any;\n  to?: string;\n  chip?: string;\n  chipBgColor?: string;\n  chipColor?: string;\n  chipVariant?: string;\n  chipIcon?: string;\n  children?: menu[];\n  disabled?: boolean;\n  type?: string;\n  subCaption?: string;\n}\n\nconst sidebarItem: menu[] = [\n  { header: 'Administrativo' },\n  {\n      title: 'Painel',\n      icon: BrandChromeIcon,\n      to: route('dashboard')\n  },\n  {\n    title: 'Projetos',\n    icon: BrandChromeIcon,\n    to: route('sigaa.projetos.index')\n  },\n  {\n    title: 'Componentes Curriculares',\n    icon: BrandChromeIcon,\n    to: route('sigaa.componentesCurriculares.index')\n  },\n  {\n    title: 'Orientações',\n    icon: BrandChromeIcon,\n    to: '#',\n    children: [\n        {\n            title: 'Graduação',\n            icon: CircleIcon,\n            to: route('sigaa.orientacoes.graduacao.index')\n        },\n        {\n          title: 'Pós Graduação',\n          icon: CircleIcon,\n          to: route('sigaa.orientacoes.posgraduacao.index')\n      },\n    ]\n  },\n  {\n    title: 'Designações',\n    icon: BrandChromeIcon,\n    to: route('sigaa.designacoes.index')\n  },\n  {\n    title: 'Ausências',\n    icon: BrandChromeIcon,\n    to: route('sigaa.ausencias.index')\n  },\n  { header: 'Gerencial' },\n  {\n      title: 'Menu Level',\n      icon: MenuIcon,\n      to: '#',\n      children: [\n          {\n              title: 'Level 1',\n              icon: CircleIcon,\n              to: '/level1'\n          },\n          {\n              title: 'Level 1',\n              icon: CircleIcon,\n              to: '/2level',\n              children: [\n                  {\n                      title: 'Level 2',\n                      icon: CircleIcon,\n                      to: '/barry'\n                  },\n                  {\n                      title: 'Level 2',\n                      icon: CircleIcon,\n                      to: '/2.2level',\n                      children: [\n                          {\n                              title: 'Level 3',\n                              icon: CircleIcon,\n                              to: '/barry'\n                          }\n                      ]\n                  }\n              ]\n          }\n      ]\n  },\n  {\n      title: 'Disabled',\n      icon: CircleOffIcon,\n      disabled: true,\n      to: '/flexy'\n  },\n  {\n      title: 'Sub Caption',\n      icon: StarIcon,\n      subCaption: 'This is the subtitle',\n      to: '/flexy'\n  },\n  {\n      title: 'Chip',\n      icon: AwardIcon,\n      chip: '9',\n      chipColor: 'surface',\n      chipBgColor: 'secondary',\n      to: '/flexy'\n  },\n  {\n      title: 'Outlined',\n      icon: MoodSmileIcon,\n      chip: 'outline',\n      chipColor: 'secondary',\n      chipVariant: 'outlined',\n      to: '/flexy'\n  },\n  {\n      title: 'External Link',\n      icon: StarIcon,\n      to: '/flexy',\n      type: 'external'\n  }\n];\n\nexport default sidebarItem;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/resources/js/Layouts/full/vertical-sidebar/sidebarItem.ts b/resources/js/Layouts/full/vertical-sidebar/sidebarItem.ts
+--- a/resources/js/Layouts/full/vertical-sidebar/sidebarItem.ts	
++++ b/resources/js/Layouts/full/vertical-sidebar/sidebarItem.ts	
+@@ -42,31 +42,24 @@
+     to: route('sigaa.componentesCurriculares.index')
+   },
+   {
++      title: 'Planos Academicos',
++      icon: BrandChromeIcon,
++      to: route('sigaa.planoAcademico.index')
++  },
++  {
+     title: 'Orientações',
+     icon: BrandChromeIcon,
+-    to: '#',
+-    children: [
+-        {
+-            title: 'Graduação',
+-            icon: CircleIcon,
+-            to: route('sigaa.orientacoes.graduacao.index')
+-        },
+-        {
+-          title: 'Pós Graduação',
+-          icon: CircleIcon,
+-          to: route('sigaa.orientacoes.posgraduacao.index')
+-      },
+-    ]
++    to: route('sigaa.projetos.index')
+   },
+   {
+     title: 'Designações',
+     icon: BrandChromeIcon,
+-    to: route('sigaa.designacoes.index')
++    to: route('sigaa.projetos.index')
+   },
+   {
+     title: 'Ausências',
+     icon: BrandChromeIcon,
+-    to: route('sigaa.ausencias.index')
++    to: route('sigaa.projetos.index')
+   },
+   { header: 'Gerencial' },
+   {

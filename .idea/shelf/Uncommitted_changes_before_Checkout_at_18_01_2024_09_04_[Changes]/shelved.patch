@@ -1,0 +1,149 @@
+Index: config/database.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nuse Illuminate\\Support\\Str;\n\nreturn [\n\n    /*\n    |--------------------------------------------------------------------------\n    | Default Database Connection Name\n    |--------------------------------------------------------------------------\n    |\n    | Here you may specify which of the database connections below you wish\n    | to use as your default connection for all database work. Of course\n    | you may use many connections at once using the Database library.\n    |\n    */\n\n    'default' => env('DB_CONNECTION', 'local'),\n\n    /*\n    |--------------------------------------------------------------------------\n    | Database Connections\n    |--------------------------------------------------------------------------\n    |\n    | Here are each of the database connections setup for your application.\n    | Of course, examples of configuring each database platform that is\n    | supported by Laravel is shown below to make development simple.\n    |\n    |\n    | All database work in Laravel is done through the PHP PDO facilities\n    | so make sure you have the driver for your particular database of\n    | choice installed on your machine before you begin development.\n    |\n    */\n\n    'connections' => [\n\n        'sqlite' => [\n            'driver' => 'sqlite',\n            'url' => env('DATABASE_URL'),\n            'database' => env('DB_DATABASE', database_path('database.sqlite')),\n            'prefix' => '',\n            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),\n        ],\n\n        'local' => [\n            'driver' => 'mysql',\n            'url' => env('DATABASE_URL'),\n            'host' => env('DB_HOST', '127.0.0.1'),\n            'port' => env('DB_PORT', '3306'),\n            'database' => env('DB_DATABASE', 'saad'),\n            'username' => env('DB_USERNAME', 'root'),\n            'password' => env('DB_PASSWORD', 'Soeusei*23'),\n            'unix_socket' => env('DB_SOCKET', ''),\n            'charset' => 'utf8mb4',\n            'collation' => 'utf8mb4_unicode_ci',\n            'prefix' => '',\n            'prefix_indexes' => true,\n            'strict' => false,\n            'engine' => null,\n            'options' => extension_loaded('pdo_mysql') ? array_filter([\n                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),\n            ]) : [],\n        ],\n\n        'comum' => [\n            'driver' => 'pgsql',\n            'host' => '10.203.24.134',\n            'port' => '5432',\n            'database' => 'sistemas_comum_h1',\n            'username' => 'comum_user',\n            'password' => 'comum_user',\n            'charset' => 'utf8',\n            'prefix' => '',\n            'prefix_indexes' => true,\n            'search_path' => 'public',\n            'sslmode' => 'prefer',\n        ],\n\n        'sigaa' => [\n            'driver' => 'pgsql',\n            'host' =>  '10.203.24.134',\n            'port' =>  '5432',\n            'database' => 'sigaa_h1',\n            'username' => 'sigaa',\n            'password' => 'sigaa',\n            'charset' => 'utf8',\n            'prefix' => '',\n            'prefix_indexes' => true,\n            'search_path' => 'public',\n            'sslmode' => 'prefer',\n        ],\n\n        'administrativo' => [\n            'driver' => 'pgsql',\n            'host' => '10.203.24.134',\n            'port' => '5432',\n            'database' =>  'administrativo_h1',\n            'username' =>  'sipac',\n            'password' =>  'sipac',\n            'charset' => 'utf8',\n            'prefix' => '',\n            'prefix_indexes' => true,\n            'search_path' => 'public',\n            'sslmode' => 'prefer',\n        ],\n\n        /*'local' => [\n            'driver' => 'pgsql',\n            'host' => 'localhost',\n            'port' => '5432',\n            'database' =>  'SAADDev',\n            'username' =>  'postgres',\n            'password' =>  '1',\n            'charset' => 'utf8',\n            'prefix' => '',\n            'prefix_indexes' => true,\n            'search_path' => 'public',\n            'sslmode' => 'prefer',\n        ],*/\n\n        'pgsql' => [\n            'driver' => 'pgsql',\n            'url' => env('DATABASE_URL'),\n            'host' => env('DB_HOST', '127.0.0.1'),\n            'port' => env('DB_PORT', '5432'),\n            'database' => env('DB_DATABASE', 'forge'),\n            'username' => env('DB_USERNAME', 'forge'),\n            'password' => env('DB_PASSWORD', ''),\n            'charset' => 'utf8',\n            'prefix' => '',\n            'prefix_indexes' => true,\n            'search_path' => 'public',\n            'sslmode' => 'prefer',\n        ],\n\n        'sqlsrv' => [\n            'driver' => 'sqlsrv',\n            'url' => env('DATABASE_URL'),\n            'host' => env('DB_HOST', 'localhost'),\n            'port' => env('DB_PORT', '1433'),\n            'database' => env('DB_DATABASE', 'forge'),\n            'username' => env('DB_USERNAME', 'forge'),\n            'password' => env('DB_PASSWORD', ''),\n            'charset' => 'utf8',\n            'prefix' => '',\n            'prefix_indexes' => true,\n            // 'encrypt' => env('DB_ENCRYPT', 'yes'),\n            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),\n        ],\n\n    ],\n\n    /*\n    |--------------------------------------------------------------------------\n    | Migration Repository Table\n    |--------------------------------------------------------------------------\n    |\n    | This table keeps track of all the migrations that have already run for\n    | your application. Using this information, we can determine which of\n    | the migrations on disk haven't actually been run in the database.\n    |\n    */\n\n    'migrations' => 'migrations',\n\n    /*\n    |--------------------------------------------------------------------------\n    | Redis Databases\n    |--------------------------------------------------------------------------\n    |\n    | Redis is an open source, fast, and advanced key-value store that also\n    | provides a richer body of commands than a typical key-value system\n    | such as APC or Memcached. Laravel makes it easy to dig right in.\n    |\n    */\n\n    'redis' => [\n\n        'client' => env('REDIS_CLIENT', 'phpredis'),\n\n        'options' => [\n            'cluster' => env('REDIS_CLUSTER', 'redis'),\n            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),\n        ],\n\n        'default' => [\n            'url' => env('REDIS_URL'),\n            'host' => env('REDIS_HOST', '127.0.0.1'),\n            'username' => env('REDIS_USERNAME'),\n            'password' => env('REDIS_PASSWORD'),\n            'port' => env('REDIS_PORT', '6379'),\n            'database' => env('REDIS_DB', '0'),\n        ],\n\n        'cache' => [\n            'url' => env('REDIS_URL'),\n            'host' => env('REDIS_HOST', '127.0.0.1'),\n            'username' => env('REDIS_USERNAME'),\n            'password' => env('REDIS_PASSWORD'),\n            'port' => env('REDIS_PORT', '6379'),\n            'database' => env('REDIS_CACHE_DB', '1'),\n        ],\n\n    ],\n\n];\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/config/database.php b/config/database.php
+--- a/config/database.php	
++++ b/config/database.php	
+@@ -65,9 +65,9 @@
+ 
+         'comum' => [
+             'driver' => 'pgsql',
+-            'host' => '10.203.24.134',
+-            'port' => '5432',
+-            'database' => 'sistemas_comum_h1',
++            'host' => 'pgdb.bolsistas.ufopa.edu.br',
++            'port' => '8081',
++            'database' => 'sistemas_comum_saad',
+             'username' => 'comum_user',
+             'password' => 'comum_user',
+             'charset' => 'utf8',
+@@ -79,9 +79,9 @@
+ 
+         'sigaa' => [
+             'driver' => 'pgsql',
+-            'host' =>  '10.203.24.134',
+-            'port' =>  '5432',
+-            'database' => 'sigaa_h1',
++            'host' =>  'pgdb.bolsistas.ufopa.edu.br',
++            'port' =>  '8081',
++            'database' => 'sigaa_saad',
+             'username' => 'sigaa',
+             'password' => 'sigaa',
+             'charset' => 'utf8',
+@@ -93,9 +93,9 @@
+ 
+         'administrativo' => [
+             'driver' => 'pgsql',
+-            'host' => '10.203.24.134',
+-            'port' => '5432',
+-            'database' =>  'administrativo_h1',
++            'host' => 'pgdb.bolsistas.ufopa.edu.br',
++            'port' => '8081',
++            'database' =>  'administrativo_saad',
+             'username' =>  'sipac',
+             'password' =>  'sipac',
+             'charset' => 'utf8',
+@@ -105,6 +105,8 @@
+             'sslmode' => 'prefer',
+         ],
+ 
++
++
+         /*'local' => [
+             'driver' => 'pgsql',
+             'host' => 'localhost',
+Index: routes/web.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n \nuse App\\Http\\Controllers\\DocenteController;\nuse App\\Http\\Controllers\\EncargoAdministrativoController as EncargoAdm;\nuse App\\Http\\Controllers\\MeuPitController;\nuse App\\Http\\Controllers\\MeuRitController;\nuse App\\Http\\Controllers\\PlanoAcademicoController  as PlanoAcad;\nuse App\\Http\\Controllers\\ProfileController;\nuse App\\Http\\Controllers\\Sigaa\\AusenciaController;\nuse App\\Http\\Controllers\\Sigaa\\ComponenteCurricularController;\nuse App\\Http\\Controllers\\Sigaa\\DesignacaoController;\nuse App\\Http\\Controllers\\Sigaa\\OrientacaoGraduacaoController;\nuse App\\Http\\Controllers\\Sigaa\\OrientacaoPosGraduacaoController;\nuse App\\Http\\Controllers\\Sigaa\\ProjetoController;\nuse App\\Http\\Controllers\\PitController;\nuse App\\Models\\Administrativo\\Ausencia;\nuse App\\Http\\Controllers\\Sigaa\\EncargoAdministrativoController;\nuse App\\Http\\Controllers\\Sigaa\\PlanoAcademicoController;\nuse App\\Http\\Controllers\\ValidarPitController;\nuse App\\Http\\Controllers\\ValidarRitController;\nuse Illuminate\\Support\\Facades\\Route;\nuse Inertia\\Inertia;\n\n/*\n|--------------------------------------------------------------------------\n| Web Routes\n|--------------------------------------------------------------------------\n|\n| Here is where you can register web routes for your application. These\n| routes are loaded by the RouteServiceProvider within a group which\n| contains the \"web\" middleware group. Now create something great!\n|\n*/\n\nRoute::get('/', function () {\n    return redirect()->route('login');\n});\n\nRoute::get('/register', function () {\n    return redirect()->route('register');\n});\n\n\nRoute::get('/dashboard', [PlanoAcademicoController::class , 'PlanoAcademicoDrop'])\n    ->middleware(['auth', 'verified'])->name('dashboard');\n\nRoute::middleware('auth')->group(function () {\n    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');\n    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');\n    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');\n\n    Route::prefix('sigaa')->group(function () {\n        Route::get('/projetos', [ProjetoController::class, 'index'])->name('sigaa.projetos.index');\n        Route::get('/componentes-curriculares', [ComponenteCurricularController::class, 'index'])->name('sigaa.componentesCurriculares.index');\n        Route::get('/orientacoes/graduacao', [OrientacaoGraduacaoController::class, 'index'])->name('sigaa.orientacoes.graduacao.index');\n        Route::get('/orientacoes/posgraduacao', [OrientacaoPosGraduacaoController::class, 'index'])->name('sigaa.orientacoes.posgraduacao.index');\n        Route::get('/designacoes', [DesignacaoController::class, 'index'])->name('sigaa.designacoes.index');\n        Route::get('/ausencias', [AusenciaController::class, 'index'])->name('sigaa.ausencias.index');\n    \n        Route::get('docentes', [DocenteController::class, 'index'])->name('sigaa.docentes.index');\n        Route::get('get-docentes', [DocenteController::class, 'getDocentes'])->name('sigaa.docentes.get');\n    \n        Route::resource('pit', PitController::class);\n    });\n    \n    Route::prefix('saad')->group( function (){\n        \n        Route::resource('/planos-academicos', PlanoAcademicoController::class);\n        Route::resource('encargos-administrativos', EncargoAdministrativoController::class);\n    \n        \n        Route::get('pit/{id}', [PitController::class, 'showSaad'])->name('saad.pit.show');\n            \n    \n        Route::get('/meu-pit', [MeuPitController::class, 'index'])->name('saad.meu-pit.index');\n        Route::get('/meu-rit', [MeuRitController::class, 'index'])->name('saad.meu-rit.index');\n    \n        Route::get('/validar-pits', [ValidarPitController::class, 'index'])->name('saad.validar-pit.index');    \n        Route::post('/validar-pits', [ValidarPitController::class, 'store'])->name('saad.validar-pit.store');\n    \n        Route::get('/validar-rits', [ValidarRitController::class, 'index'])->name('saad.validar-rit.index');\n    });\n    \n    Route::prefix('pit')->group( function (){\n        Route::get('/pit', [PitController::class, 'index'])->name('pit.pit.index');\n        Route::get('/pit/mostrar_pit/{id}', [PitController::class, 'showPit'])->name('pit.pit.showPit');\n    });\n});\n\nrequire __DIR__.'/auth.php';\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/routes/web.php b/routes/web.php
+--- a/routes/web.php	
++++ b/routes/web.php	
+@@ -1,5 +1,5 @@
+ <?php
+- 
++
+ use App\Http\Controllers\DocenteController;
+ use App\Http\Controllers\EncargoAdministrativoController as EncargoAdm;
+ use App\Http\Controllers\MeuPitController;
+@@ -41,8 +41,11 @@
+ });
+ 
+ 
+-Route::get('/dashboard', [PlanoAcademicoController::class , 'PlanoAcademicoDrop'])
+-    ->middleware(['auth', 'verified'])->name('dashboard');
++Route::get('/dashboard', function () {
++    return Inertia::render('Dashboard');
++})->middleware(['auth', 'verified'])->name('dashboard');
++
++
+ 
+ Route::middleware('auth')->group(function () {
+     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+@@ -56,31 +59,31 @@
+         Route::get('/orientacoes/posgraduacao', [OrientacaoPosGraduacaoController::class, 'index'])->name('sigaa.orientacoes.posgraduacao.index');
+         Route::get('/designacoes', [DesignacaoController::class, 'index'])->name('sigaa.designacoes.index');
+         Route::get('/ausencias', [AusenciaController::class, 'index'])->name('sigaa.ausencias.index');
+-    
++
+         Route::get('docentes', [DocenteController::class, 'index'])->name('sigaa.docentes.index');
+         Route::get('get-docentes', [DocenteController::class, 'getDocentes'])->name('sigaa.docentes.get');
+-    
++
+         Route::resource('pit', PitController::class);
+     });
+-    
++
+     Route::prefix('saad')->group( function (){
+-        
++
+         Route::resource('/planos-academicos', PlanoAcademicoController::class);
+         Route::resource('encargos-administrativos', EncargoAdministrativoController::class);
+-    
+-        
++
++
+         Route::get('pit/{id}', [PitController::class, 'showSaad'])->name('saad.pit.show');
+-            
+-    
++
++
+         Route::get('/meu-pit', [MeuPitController::class, 'index'])->name('saad.meu-pit.index');
+         Route::get('/meu-rit', [MeuRitController::class, 'index'])->name('saad.meu-rit.index');
+-    
+-        Route::get('/validar-pits', [ValidarPitController::class, 'index'])->name('saad.validar-pit.index');    
++
++        Route::get('/validar-pits', [ValidarPitController::class, 'index'])->name('saad.validar-pit.index');
+         Route::post('/validar-pits', [ValidarPitController::class, 'store'])->name('saad.validar-pit.store');
+-    
++
+         Route::get('/validar-rits', [ValidarRitController::class, 'index'])->name('saad.validar-rit.index');
+     });
+-    
++
+     Route::prefix('pit')->group( function (){
+         Route::get('/pit', [PitController::class, 'index'])->name('pit.pit.index');
+         Route::get('/pit/mostrar_pit/{id}', [PitController::class, 'showPit'])->name('pit.pit.showPit');
+Index: app/Models/Sigaa/Saad/PlanoAcademico.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nnamespace App\\Models\\Sigaa\\Saad;\n\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass PlanoAcademico extends Model\n{\n    use HasFactory;\n\n    protected $primaryKey = 'id_plano_academico';\n    protected $connection = 'sigaa';\n    protected $table = 'saad.plano_academico';\n    public $timestamps = false;\n    protected $casts = [\n        'data_inicio' => 'date:d/m/Y',\n        'data_fim' => 'date:d/m/Y',\n        'pit_inicio' => 'date:d/m/Y',\n        'pit_fim' => 'date:d/m/Y',\n        'rit_inicio' => 'date:d/m/Y',\n        'rit_fim' => 'date:d/m/Y',\n    ];\n    protected $fillable = [\n        'descricao',\n        'data_inicio',\n        'data_fim',\n        'ativo',\n        'ano',\n        'periodo_intensivo', // 3, 4\n        'periodo_extensivo', // 1 ,2\n        'pit_inicio',\n        'pit_fim',\n        'rit_inicio',\n        'rit_fim',\n    ];\n\n\n}\n
+===================================================================
+diff --git a/app/Models/Sigaa/Saad/PlanoAcademico.php b/app/Models/Sigaa/Saad/PlanoAcademico.php
+--- a/app/Models/Sigaa/Saad/PlanoAcademico.php	
++++ b/app/Models/Sigaa/Saad/PlanoAcademico.php	
+@@ -21,6 +21,7 @@
+         'rit_inicio' => 'date:d/m/Y',
+         'rit_fim' => 'date:d/m/Y',
+     ];
++
+     protected $fillable = [
+         'descricao',
+         'data_inicio',

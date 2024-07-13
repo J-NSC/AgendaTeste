@@ -1,0 +1,348 @@
+Index: routes/web.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nuse App\\Http\\Controllers\\ProfileController;\nuse App\\Http\\Controllers\\Sigaa\\AusenciaController;\nuse App\\Http\\Controllers\\Sigaa\\ComponenteCurricularController;\nuse App\\Http\\Controllers\\Sigaa\\DesignacaoController;\nuse App\\Http\\Controllers\\Sigaa\\OrientacaoGraduacaoController;\nuse App\\Http\\Controllers\\Sigaa\\OrientacaoPosGraduacaoController;\nuse App\\Http\\Controllers\\Sigaa\\ProjetoController;\nuse App\\Models\\Administrativo\\Ausencia;\nuse App\\Http\\Controllers\\Sigaa\\EncargoAdministrativoController;\nuse App\\Http\\Controllers\\Sigaa\\PlanoAcademicoController;\nuse Illuminate\\Support\\Facades\\Route;\nuse Inertia\\Inertia;\n\n/*\n|--------------------------------------------------------------------------\n| Web Routes\n|--------------------------------------------------------------------------\n|\n| Here is where you can register web routes for your application. These\n| routes are loaded by the RouteServiceProvider within a group which\n| contains the \"web\" middleware group. Now create something great!\n|\n*/\n\nRoute::prefix('sigaa')->group(function () {\n    Route::get('/projetos', [ProjetoController::class, 'index'])->name('sigaa.projetos.index');\n    Route::get('/planos-academicos', [PlanoAcademicoController::class, 'index'])->name('sigaa.planoAcademico.index');\n    Route::get('/encargo_administrativo', [EncargoAdministrativoController::class, 'index'])->name('sigaa.encargoAdministrativo.index');\n    Route::get('/componentes-curriculares', [ComponenteCurricularController::class, 'index'])->name('sigaa.componentesCurriculares.index');\n    Route::get('/orientacoes/graduacao', [OrientacaoGraduacaoController::class, 'index'])->name('sigaa.orientacoes.graduacao.index');\n    Route::get('/orientacoes/posgraduacao', [OrientacaoPosGraduacaoController::class, 'index'])->name('sigaa.orientacoes.posgraduacao.index');\n    Route::get('/designacoes', [DesignacaoController::class, 'index'])->name('sigaa.designacoes.index');\n    Route::get('/ausencias', [AusenciaController::class, 'index'])->name('sigaa.ausencias.index');\n});\n\nRoute::get('/', function () {\n    return redirect()->route('login');\n    /*return Inertia::render('Welcome', [\n        'canLogin' => Route::has('login'),\n        'canRegister' => Route::has('register'),\n        'laravelVersion' => Application::VERSION,\n        'phpVersion' => PHP_VERSION,\n    ]);*/\n});\n\nRoute::get('/register', function () {\n    return redirect()->route('register');\n});\n\n\nRoute::get('/dashboard', function () {\n    return Inertia::render('Dashboard');\n})->middleware(['auth', 'verified'])->name('dashboard');\n\nRoute::middleware('auth')->group(function () {\n    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');\n    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');\n    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');\n});\n\nrequire __DIR__.'/auth.php';\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/routes/web.php b/routes/web.php
+--- a/routes/web.php	
++++ b/routes/web.php	
+@@ -7,6 +7,7 @@
+ use App\Http\Controllers\Sigaa\OrientacaoGraduacaoController;
+ use App\Http\Controllers\Sigaa\OrientacaoPosGraduacaoController;
+ use App\Http\Controllers\Sigaa\ProjetoController;
++use App\Http\Controllers\Sigaa\TipoEncargoAdministrativoController;
+ use App\Models\Administrativo\Ausencia;
+ use App\Http\Controllers\Sigaa\EncargoAdministrativoController;
+ use App\Http\Controllers\Sigaa\PlanoAcademicoController;
+@@ -26,8 +27,20 @@
+ 
+ Route::prefix('sigaa')->group(function () {
+     Route::get('/projetos', [ProjetoController::class, 'index'])->name('sigaa.projetos.index');
++
+     Route::get('/planos-academicos', [PlanoAcademicoController::class, 'index'])->name('sigaa.planoAcademico.index');
++    Route::get('/planos-academicos/create', [PlanoAcademicoController::class, 'create'])->name('sigaa.planoAcademico.create');
++    Route::post('/planos-academicos/store', [PlanoAcademicoController::class, 'store'])->name('sigaa.planoAcademico.store');
++    Route::get('/planos-academicos/edit/{planoAcademico}', [PlanoAcademicoController::class, 'edit'])->name('sigaa.planoAcademico.edit');
++    Route::post('/planos-academicos/{planoAcademico}', [PlanoAcademicoController::class, 'update'])->name('sigaa.planoAcademico.update');
++    Route::delete('/planos-academicos/{planoAcademico}', [PlanoAcademicoController::class, 'destroy'])->name('sigaa.planoAcademico.delete');
++
+     Route::get('/encargo_administrativo', [EncargoAdministrativoController::class, 'index'])->name('sigaa.encargoAdministrativo.index');
++    Route::get('/encargo_administrativo/create', [EncargoAdministrativoController::class, 'create'])->name('sigaa.encargoAdministrativo.create');
++    Route::post('/encargo_administrativo/store', [EncargoAdministrativoController::class, 'store'])->name('sigaa.encargoAdministrativo.store');
++//    Route::get('/tipo_encargo_administrativo', [TipoEncargoAdministrativoController::class, 'index'])->name('sigaa.encargoAdministrativo.index');
++
++
+     Route::get('/componentes-curriculares', [ComponenteCurricularController::class, 'index'])->name('sigaa.componentesCurriculares.index');
+     Route::get('/orientacoes/graduacao', [OrientacaoGraduacaoController::class, 'index'])->name('sigaa.orientacoes.graduacao.index');
+     Route::get('/orientacoes/posgraduacao', [OrientacaoPosGraduacaoController::class, 'index'])->name('sigaa.orientacoes.posgraduacao.index');
+@@ -35,6 +48,7 @@
+     Route::get('/ausencias', [AusenciaController::class, 'index'])->name('sigaa.ausencias.index');
+ });
+ 
++
+ Route::get('/', function () {
+     return redirect()->route('login');
+     /*return Inertia::render('Welcome', [
+Index: app/Http/Controllers/Sigaa/EncargoAdministrativoController.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nnamespace App\\Http\\Controllers\\Sigaa;\n\nuse App\\Http\\Controllers\\Controller;\nuse App\\Models\\Sigaa\\saad\\EncargoAdministrativo;\nuse Inertia\\Inertia;\nuse Inertia\\Response;\n\nclass EncargoAdministrativoController extends Controller\n{\n    //\n\n    public function  index(): Response{\n        $encargoAdmin = EncargoAdministrativo::with('tipoEncargos')->get();\n//        dd($encargoAdmin);\n\n        return  Inertia::render('Sigaa/EncargoAdministrativo/Index',[\n            'encargoAdmin'=> $encargoAdmin,\n            'filters' => request()->all(['search'])\n        ]);\n    }\n}\n
+===================================================================
+diff --git a/app/Http/Controllers/Sigaa/EncargoAdministrativoController.php b/app/Http/Controllers/Sigaa/EncargoAdministrativoController.php
+--- a/app/Http/Controllers/Sigaa/EncargoAdministrativoController.php	
++++ b/app/Http/Controllers/Sigaa/EncargoAdministrativoController.php	
+@@ -4,6 +4,11 @@
+ 
+ use App\Http\Controllers\Controller;
+ use App\Models\Sigaa\saad\EncargoAdministrativo;
++use App\Models\Sigaa\saad\TiposEncargosAdminstrativos;
++use Exception;
++use Illuminate\Http\RedirectResponse;
++use Illuminate\Http\Request;
++use Illuminate\Support\Facades\DB;
+ use Inertia\Inertia;
+ use Inertia\Response;
+ 
+@@ -20,4 +25,32 @@
+             'filters' => request()->all(['search'])
+         ]);
+     }
++
++    public  function create(): Response{
++        $tiposEncargo = TiposEncargosAdminstrativos::all();
++        return Inertia::render('Sigaa/EncargoAdministrativo/Create',[
++              'tiposEncargo'  => $tiposEncargo,
++            'test' => 'sdfsdf'
++        ]);
++    }
++
++    public function store(Request $request):RedirectResponse{
++        $validate = $request->validate([
++            'descricao' => 'required',
++//            'tipo' => 'required'
++        ]);
++
++        $tipo = TiposEncargosAdminstrativos::findOrFail($validate['tipo']);
++        DB::beginTransaction();
++        try {
++            $tipo->encargoAdministrativos()->create($validate);
++            DB::commit();
++        }catch (Exception $e){
++//            report($e);
++            DB::rollBack();
++            dd($e->getMessage());
++        }
++        return redirect(route('sigaa.encargoAdministrativo.index'));
++    }
++
+ }
+Index: app/Models/Sigaa/saad/PlanoAcademicos.php
+===================================================================
+diff --git a/app/Models/Sigaa/saad/PlanoAcademicos.php b/app/Models/Sigaa/saad/PlanoAcademico.php
+rename from app/Models/Sigaa/saad/PlanoAcademicos.php
+rename to app/Models/Sigaa/saad/PlanoAcademico.php
+--- a/app/Models/Sigaa/saad/PlanoAcademicos.php	
++++ b/app/Models/Sigaa/saad/PlanoAcademico.php	
+@@ -2,18 +2,23 @@
+ 
+ namespace App\Models\Sigaa\saad;
+ 
++use Illuminate\Database\Eloquent\Builder;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Database\Eloquent\Model;
+-
+-class PlanoAcademicos extends Model
++/**
++ * @mixin Builder
++ */
++class PlanoAcademico extends Model
+ {
+     use HasFactory;
+-//
++
+ //    protected $primaryKey = 'id_plano_academico';
+ //    protected $connection = 'sigaa';
+ //    protected $table = 'saad.plano_academico';
+ //    public $timestamps = false;
+     protected $table = 'plano_academico';
++
++
+     protected $fillable = [
+         'descricao',
+         'data_inicio',
+Index: app/Models/Sigaa/saad/TiposEncargosAdminstrativos.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nnamespace App\\Models\\Sigaa\\saad;\n\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Database\\Eloquent\\Model;\nuse Illuminate\\Database\\Eloquent\\Relations\\HasMany;\n\nclass TiposEncargosAdminstrativos extends Model\n{\n    use HasFactory;\n\n//    protected $primaryKey = 'id_tipos_encargos';\n//    protected $connection = 'sigaa';\n//    protected $table = 'saad.tipos_encargo_adminstrativos';\n    protected $table = 'tipos_encargos_adminstrativos';\n\n    public  function  encargoAdministrativos(): HasMany{\n        return  $this->hasMany(EncargoAdministrativo::class);\n    }\n}\n
+===================================================================
+diff --git a/app/Models/Sigaa/saad/TiposEncargosAdminstrativos.php b/app/Models/Sigaa/saad/TiposEncargosAdminstrativos.php
+--- a/app/Models/Sigaa/saad/TiposEncargosAdminstrativos.php	
++++ b/app/Models/Sigaa/saad/TiposEncargosAdminstrativos.php	
+@@ -2,10 +2,14 @@
+ 
+ namespace App\Models\Sigaa\saad;
+ 
++use Illuminate\Database\Eloquent\Builder;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Database\Eloquent\Model;
+ use Illuminate\Database\Eloquent\Relations\HasMany;
+ 
++/**
++ * @mixin Builder
++ */
+ class TiposEncargosAdminstrativos extends Model
+ {
+     use HasFactory;
+@@ -18,4 +22,8 @@
+     public  function  encargoAdministrativos(): HasMany{
+         return  $this->hasMany(EncargoAdministrativo::class);
+     }
++
++    protected $fillable = [
++        'descricao'
++    ];
+ }
+Index: app/Models/Sigaa/saad/EncargoAdministrativo.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nnamespace App\\Models\\Sigaa\\saad;\n\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Database\\Eloquent\\Model;\nuse Illuminate\\Database\\Eloquent\\Relations\\BelongsTo;\nuse Illuminate\\Database\\Eloquent\\Relations\\HasMany;\n\nclass EncargoAdministrativo extends Model\n{\n    use HasFactory;\n//    protected $primaryKey = 'id_encargos_administrativos';\n//    protected $connection = 'sigaa';\n//    protected $table = 'saad.encargo_administrativo';\n    protected $table = 'encargos_adminstrativos';\n\n\n    public  function  tipoEncargos(): BelongsTo{\n        return  $this->BelongsTo(TiposEncargosAdminstrativos::class);\n    }\n\n    protected $fillable = [\n        'unidade_Id',\n        'data_inicio',\n        'data_fim',\n        'funcao',\n        'ch_semanal',\n        'portaria',\n        'arquivo_portaria',\n        'servidor_id',\n    ];\n}\n
+===================================================================
+diff --git a/app/Models/Sigaa/saad/EncargoAdministrativo.php b/app/Models/Sigaa/saad/EncargoAdministrativo.php
+--- a/app/Models/Sigaa/saad/EncargoAdministrativo.php	
++++ b/app/Models/Sigaa/saad/EncargoAdministrativo.php	
+@@ -2,11 +2,14 @@
+ 
+ namespace App\Models\Sigaa\saad;
+ 
++use Illuminate\Database\Eloquent\Builder;
+ use Illuminate\Database\Eloquent\Factories\HasFactory;
+ use Illuminate\Database\Eloquent\Model;
+ use Illuminate\Database\Eloquent\Relations\BelongsTo;
+ use Illuminate\Database\Eloquent\Relations\HasMany;
+-
++/**
++ * @mixin Builder
++ */
+ class EncargoAdministrativo extends Model
+ {
+     use HasFactory;
+Index: app/Http/Controllers/Sigaa/PlanoAcademicoController.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nnamespace App\\Http\\Controllers\\Sigaa;\n\nuse App\\Http\\Controllers\\Controller;\n\nuse App\\Models\\Sigaa\\saad\\PlanoAcademicos;\nuse Inertia\\Inertia;\nuse Inertia\\Response;\n\nclass PlanoAcademicoController extends Controller\n{\n    public function  index(): Response{\n\n        $planoAcademicos = PlanoAcademicos::all();\n//        dd($planoAcademicos);\n\n//        $planoAcademicos = $planoAcademicos->where('id', 'DESC');\n//                                            ->paginate(100)\n//                                            ->withQueryString();\n        return Inertia::render('Sigaa/PlanoAcademico/Index',[\n            'planoAcademicos' => $planoAcademicos,\n            'filters' => request()->all(['search'])\n        ]);\n\n    }\n}\n
+===================================================================
+diff --git a/app/Http/Controllers/Sigaa/PlanoAcademicoController.php b/app/Http/Controllers/Sigaa/PlanoAcademicoController.php
+--- a/app/Http/Controllers/Sigaa/PlanoAcademicoController.php	
++++ b/app/Http/Controllers/Sigaa/PlanoAcademicoController.php	
+@@ -4,7 +4,11 @@
+ 
+ use App\Http\Controllers\Controller;
+ 
+-use App\Models\Sigaa\saad\PlanoAcademicos;
++use App\Models\Sigaa\saad\PlanoAcademico;
++use Exception;
++use Illuminate\Http\RedirectResponse;
++use Illuminate\Http\Request;
++use Illuminate\Support\Facades\DB;
+ use Inertia\Inertia;
+ use Inertia\Response;
+ 
+@@ -12,7 +16,7 @@
+ {
+     public function  index(): Response{
+ 
+-        $planoAcademicos = PlanoAcademicos::all();
++        $planoAcademicos = PlanoAcademico::all();
+ //        dd($planoAcademicos);
+ 
+ //        $planoAcademicos = $planoAcademicos->where('id', 'DESC');
+@@ -22,6 +26,70 @@
+             'planoAcademicos' => $planoAcademicos,
+             'filters' => request()->all(['search'])
+         ]);
++    }
++    public function  create(): Response{
++        return Inertia::render('Sigaa/PlanoAcademico/Create');
++    }
++
++    public function  store(Request $request): Response{
+ 
++        $validate = $request->validate([
++            'descricao' => 'required' ,
++            'data_inicio' => 'required' ,
++            'data_fim' => 'required' ,
++            'ativo' => 'required' ,
++            'ano' => 'required' ,
++            'periodo_intensivo' => 'required' ,
++            'periodo_extensivo' => 'required' ,
++            'pit_inicio' => 'required' ,
++            'pit_fim' => 'required' ,
++            'rit_inicio' => 'required' ,
++            'rit_fim' => 'required' ,
++        ]);
++
++        DB::beginTransaction();
++        try {
++            PlanoAcademico::create($validate);
++            DB::commit();
++        }catch (Exception $e){
++//            report($e);
++            DB::rollBack();
++            dd($e->getMessage());
++        }
++        return redirect(route('sigaa.planoAcademico.index'));
++
++    }
++
++    public function edit (PlanoAcademico $planoAcademico): Response{
++        return Inertia::render('Sigaa/PlanoAcademico/Edit', [
++            'planoAcademico' => $planoAcademico
++        ]);
++    }
++
++
++    public function update(Request $request, PlanoAcademico $planoAcademico): RedirectResponse{
++//        $this->authorize('update', $planoAcademico);
++
++        $validate = $request->validate([
++            'descricao' => 'required' ,
++            'data_inicio' => 'required' ,
++            'data_fim' => 'required' ,
++            'ativo' => 'required' ,
++            'ano' => 'required' ,
++            'periodo_intensivo' => 'required' ,
++            'periodo_extensivo' => 'required' ,
++            'pit_inicio' => 'required' ,
++            'pit_fim' => 'required' ,
++            'rit_inicio' => 'required' ,
++            'rit_fim' => 'required' ,
++        ]);
++
++        $planoAcademico->update($validate);
++        return  redirect(route('sigaa.planoAcademico.index'));
++    }
++
++    public function destroy(PlanoAcademico $planoAcademico): RedirectResponse{
++        $planoAcademico->delete();
++        return  redirect(route('sigaa.planoAcademico.index'));
+     }
+ }
+Index: resources/js/Pages/Sigaa/PlanoAcademico/Index.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><script setup>\nimport Pagination from '@/Components/Pagination.vue';\nimport TextInput from '@/Components/TextInput.vue';\nimport AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';\nimport { Head, router } from '@inertiajs/vue3';\nimport { watch } from 'vue';\nimport { reactive } from 'vue';\nimport pickBy from \"lodash/pickBy\";\nimport throttle from \"lodash/throttle\";\nimport { ref } from 'vue';\nimport FullLayout from '@/Layouts/full/FullLayout.vue';\nimport BaseBreadcrumb from '@/Components/shared/BaseBreadcrumb.vue';\nimport UiParentCard from '@/Components/shared/UiParentCard.vue';\n\nconst props = defineProps({\n    planoAcademicos: Object,\n    filters: Object,\n});\nconst state = reactive({ search: props.filters.search });\n\nwatch(\n  state,\n  throttle(() => {\n    let query = pickBy(state);\n    router.get(route(\"sigaa.planoAcademico.index\"), query, {\n      replace: true,\n      preserveState: true,\n    });\n  }, 800),\n  {\n    deep: true,\n  }\n);\nconst page = ref({ title: 'Plano Academico' });\nconst breadcrumbs = ref([\n    {\n        text: 'Administrativo',\n        disabled: false,\n        href: '#'\n    },\n    {\n        text: 'Projetos',\n        disabled: true,\n        href: '#'\n    }\n]);\n\nconst getColor = (status) => {\n    if (status === 'ENSINO') return '#13DEB9'\n    else if (status === 'EXTENSÃO') return '#FA896B'\n    else if (status === 'PESQUISA') return '#5D87FF'\n    else return '#FFAE1F'\n}\n\n</script>\n\n<template>\n    <Head title=\"Plano Academico\" />\n\n    <FullLayout>\n        <BaseBreadcrumb :title=\"page.title\" :breadcrumbs=\"breadcrumbs\"></BaseBreadcrumb>\n        <v-row>\n            <v-col cols=\"12\">\n                <UiParentCard title=\"Projetos\">\n                    <v-text-field v-model=\"state.search\" append-inner-icon=\"mdi-magnify\" label=\"Pesquisar pelo título do projeto\" single-line hide-details\n                    class=\"mb-5\" />\n                    <div class=\" mx-auto sm:px-6 lg:px-8\">\n                        <div class=\"bg-white overflow-hidden shadow-sm sm:rounded-lg\">\n\n                            <table class=\"min-w-full divide-y divide-gray-200 dark:divide-gray-700\">\n                                <thead>\n                                    <tr>\n                                    <th scope=\"col\" class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase\">ID</th>\n                                    <th scope=\"col\" class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase\">Descrição</th>\n                                    <th scope=\"col\" class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase\">Ativo</th>\n                                    <th scope=\"col\" class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase\">Ano</th>\n                                    <th scope=\"col\" class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase\">Periodo Intesivo</th>\n                                    <th scope=\"col\" class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase\">Periodo Extensivo</th>\n                                    <th scope=\"col\" class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase\">PIT inicio</th>\n                                    <th scope=\"col\" class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase\">PIT Fim</th>\n                                    <th scope=\"col\" class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase\">RIT inicio</th>\n                                    <th scope=\"col\" class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase\">RIT fim</th>\n                                    </tr>\n                                </thead>\n                                <tbody class=\"divide-y divide-gray-200 dark:divide-gray-700\">\n                                    <tr v-for=\"planoAcademico in planoAcademicos\">\n                                        <td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200\">{{planoAcademico.id}}</td>\n<!--                                        <td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200\">-->\n<!--                                            <v-chip :color=\"getColor(planoAcademico.descricao)\">-->\n<!--                                                {{ planoAcademico.descricao }}-->\n<!--                                            </v-chip>-->\n\n<!--                                        </td>-->\n                                        <td class=\"px-6 py-4 text-sm text-gray-800 dark:text-gray-200\">{{planoAcademico.descricao}}</td>\n                                        <td class=\"px-6 py-4 text-sm text-gray-800 dark:text-gray-200\">{{planoAcademico.ativo}}</td>\n                                        <td class=\"px-6 py-4 text-sm text-gray-800 dark:text-gray-200\">{{planoAcademico.ano}}</td>\n                                        <td class=\"px-6 py-4 text-sm text-gray-800 dark:text-gray-200\">{{planoAcademico.periodo_intensivo}}</td>\n                                        <td class=\"px-6 py-4 text-sm text-gray-800 dark:text-gray-200\">{{planoAcademico.periodo_extensivo}}</td>\n                                        <td class=\"px-6 py-4 text-sm text-gray-800 dark:text-gray-200\">{{planoAcademico.pit_inicio}}</td>\n                                        <td class=\"px-6 py-4 text-sm text-gray-800 dark:text-gray-200\">{{planoAcademico.pit_fim}}</td>\n                                        <td class=\"px-6 py-4 text-sm text-gray-800 dark:text-gray-200\">{{planoAcademico.rit_inicio}}</td>\n                                        <td class=\"px-6 py-4 text-sm text-gray-800 dark:text-gray-200\">{{planoAcademico.rit_fim}}</td>\n                                    </tr>\n\n\n                                </tbody>\n                             </table>\n<!--                            <Pagination class=\"mt-6\" :links=\"projetos.links\" />-->\n                        </div>\n                    </div>\n\n                </UiParentCard>\n            </v-col>\n        </v-row>\n\n\n    </FullLayout>\n</template>\n
+===================================================================
+diff --git a/resources/js/Pages/Sigaa/PlanoAcademico/Index.vue b/resources/js/Pages/Sigaa/PlanoAcademico/Index.vue
+--- a/resources/js/Pages/Sigaa/PlanoAcademico/Index.vue	
++++ b/resources/js/Pages/Sigaa/PlanoAcademico/Index.vue	
+@@ -11,6 +11,7 @@
+ import FullLayout from '@/Layouts/full/FullLayout.vue';
+ import BaseBreadcrumb from '@/Components/shared/BaseBreadcrumb.vue';
+ import UiParentCard from '@/Components/shared/UiParentCard.vue';
++import { Link } from '@inertiajs/vue3';
+ 
+ const props = defineProps({
+     planoAcademicos: Object,
+@@ -100,6 +101,17 @@
+                                         <td class="px-6 py-4 text-sm text-gray-800 dark:text-gray-200">{{planoAcademico.pit_fim}}</td>
+                                         <td class="px-6 py-4 text-sm text-gray-800 dark:text-gray-200">{{planoAcademico.rit_inicio}}</td>
+                                         <td class="px-6 py-4 text-sm text-gray-800 dark:text-gray-200">{{planoAcademico.rit_fim}}</td>
++                                        <td class="px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
++                                          <Link :href="route('sigaa.planoAcademico.edit', {planoAcademico: planoAcademico.id})">
++                                              edit
++                                          </Link>
++                                        </td>
++
++                                      <td class="px-6 py-4 text-sm text-gray-800 dark:text-gray-200">
++                                        <Link :href="route('sigaa.planoAcademico.delete', {planoAcademico: planoAcademico.id})">
++                                            Excluir
++                                        </Link>
++                                      </td>
+                                     </tr>
+ 
+ 
+Index: database/migrations/2023_10_18_141228_create_plano_academico.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nuse Illuminate\\Database\\Migrations\\Migration;\nuse Illuminate\\Database\\Schema\\Blueprint;\nuse Illuminate\\Support\\Facades\\Schema;\n\nreturn new class extends Migration\n{\n    /**\n     * Run the migrations.\n     */\n    public function up(): void\n    {\n        Schema::create('plano_academico', function (Blueprint $table) {\n            $table->id();\n            $table->string('descricao');\n            $table->date('data_inicio');\n            $table->date('data_fim');\n            $table->boolean('ativo');\n            $table->integer('ano');\n            $table->integer('periodo_intensivo');\n            $table->integer('periodo_extensivo');\n            $table->time('pit_inicio');\n            $table->time('pit_fim');\n            $table->time('rit_inicio');\n            $table->time('rit_fim');\n            $table->timestamps();\n        });\n    }\n\n    /**\n     * Reverse the migrations.\n     */\n    public function down(): void\n    {\n        Schema::dropIfExists('plano_academico');\n    }\n};\n
+===================================================================
+diff --git a/database/migrations/2023_10_18_141228_create_plano_academico.php b/database/migrations/2023_10_18_141228_create_plano_academico.php
+--- a/database/migrations/2023_10_18_141228_create_plano_academico.php	
++++ b/database/migrations/2023_10_18_141228_create_plano_academico.php	
+@@ -20,10 +20,10 @@
+             $table->integer('ano');
+             $table->integer('periodo_intensivo');
+             $table->integer('periodo_extensivo');
+-            $table->time('pit_inicio');
+-            $table->time('pit_fim');
+-            $table->time('rit_inicio');
+-            $table->time('rit_fim');
++            $table->dateTime('pit_inicio');
++            $table->dateTime('pit_fim');
++            $table->dateTime('rit_inicio');
++            $table->dateTime('rit_fim');
+             $table->timestamps();
+         });
+     }

@@ -1,0 +1,122 @@
+Index: app/Http/Controllers/Sigaa/EncargoAdministrativoController.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\n\nnamespace App\\Http\\Controllers\\Sigaa;\n\nuse App\\Http\\Controllers\\Controller;\nuse App\\Http\\Requests\\RequestEncargoAdministrativo;\nuse App\\Models\\Comum\\Servidor;\nuse App\\Models\\Comum\\Unidade;\nuse App\\Models\\Sigaa\\Saad\\EncargoAdministrativo;\nuse App\\Models\\Saad\\TipoEncargoAdministrativo;\nuse Illuminate\\Http\\RedirectResponse;\nuse Illuminate\\Support\\Facades\\Auth;\n\nuse Illuminate\\Support\\Facades\\Redirect;\nuse Inertia\\Inertia;\nuse Inertia\\Response;\n\nclass EncargoAdministrativoController extends Controller\n{\n    protected $funcoes = [\n        [\n            'descricao' => 'Participação em reuniões de órgãos colegiados (Núcleo Docente Estruturante -NDE, comissões, comitês) de unidade ou subunidade acadêmica',\n            'ch' => 2\n        ],\n        [\n            'descricao' => 'Representação nos órgãos colegiados (Conselhos Superiores, Conselhos de unidades acadêmicas e Colegiados de subunidades acadêmicas)',\n            'ch' => 2\n        ],\n        [\n            'descricao' => 'Presidente de comissões e comitês',\n            'ch' => 5\n        ]\n    ];\n\n    public function index(): Response\n    {\n        $encargos = EncargoAdministrativo::with(\n                                            'pessoa',\n                                            'unidade'\n                                        );\n        if (request('search')) {\n            $encargos= $encargos->whereHas('pessoa', function($query){\n                $query->where('nome', 'ilike', request('search').'%');\n            });  \n        }\n        $encargos = $encargos->orderBy('id_encargos_administrativos', 'DESC')                        \n                            ->paginate(100)\n                            ->withQueryString()\n                            ->through(function ($encargoAdmins) {\n                                return [\n                                    'id' => $encargoAdmins->id_encargos_administrativos,                    \n                                    'docente' => $encargoAdmins?->pessoa?->nome,\n                                    'unidade' => $encargoAdmins?->unidade?->nome,\n                                    'inicio' => $encargoAdmins->inicio->format('d/m/Y'),\n                                    'fim' => ($encargoAdmins->fim) ? $encargoAdmins->fim->format('d/m/Y') : null,\n                                    'funcao' => $encargoAdmins?->funcao,\n                                    'portaria' => $encargoAdmins?->portaria,\n                                    'arquivo_portaria' => $encargoAdmins?->arquivo_portaria,\n                                    'ch_semanal' => $encargoAdmins?->ch_semanal,\n                                    'id_tipo_encargo_administrativo' => $encargoAdmins->id_tipo_encargo_administrativo\n                                ];\n                            });            \n\n        return Inertia::render('Sigaa/EncargoAdministrativo/Index', [\n            'encargos' => $encargos,\n            'filters' => request()->all(['search'])\n        ]);\n    }\n\n    public function create(): Response\n    {        \n        $tiposDeEncargos = TipoEncargoAdministrativo::orderBy('descricao','ASC')->get();        \n\n        return Inertia::render('Sigaa/EncargoAdministrativo/Create', [\n            'tiposDeEncargos' => $tiposDeEncargos, \n            'funcoes' => $this->funcoes\n        ]);\n    }\n\n\n    public function store(RequestEncargoAdministrativo $request): RedirectResponse\n    {\n        $data = $request->all();\n        \n        $user = Auth::user();\n        $arquivo_portaria = null;\n        if ($request->hasFile('arquivo_portaria')) {\n            $arquivo_portaria = $request->file('arquivo_portaria')->store('arquivo_portaria', 'public');\n        }\n        if(!isset($data['docentes'])){\n            \n            $docente['id_unidade'] = $user->usuario->id_unidade;\n            $docente['id'] = $user->usuario->id_pessoa;\n\n            $encargo = [\n                'id_tipo_encargo_administrativo' => $data['tipo_encargo_administrativo_id'],\n                'inicio' => $data['inicio'],\n                'fim' => $data['fim'],\n                'funcao' => (is_array($data['funcao'])) ? $data['funcao']['descricao'] : $data['funcao'],\n                'portaria' => $data['portaria'],\n                'arquivo_portaria' => $arquivo_portaria,\n                'id_unidade' => $docente['id_unidade'],\n                'ch_semanal' => $data['ch_semanal'],\n                'id_servidor' => $docente['id'],\n                'data_cadastro' => date('Y-m-d '),\n                'username' => $user->email\n            ];\n            \n            EncargoAdministrativo::create($encargo);\n        }else{\n            foreach($data['docentes'] as $docente){\n                $encargo = [\n                    'id_tipo_encargo_administrativo' => $data['tipo_encargo_administrativo_id'],\n                    'inicio' => $data['inicio'],\n                    'fim' => $data['fim'],\n                    'funcao' => (is_array($data['funcao'])) ? $data['funcao']['descricao'] : $data['funcao'],\n                    'portaria' => $data['portaria'],\n                    'arquivo_portaria' => $arquivo_portaria,\n                    'id_unidade' => $docente['id_unidade'],\n                    'ch_semanal' => $data['ch_semanal'],\n                    'id_servidor' => $docente['id'],\n                    'data_cadastro' => date('Y-m-d '),\n                    'username' => $user->email\n                ];\n\n                EncargoAdministrativo::create($encargo);\n            }\n        }\n        \n        return Redirect::route('encargos-administrativos.index');\n    }\n\n    public function edit(int $id): Response\n    {\n        $tiposDeEncargos = TipoEncargoAdministrativo::orderBy('descricao','ASC')->get();                \n        \n        $encargoObj = EncargoAdministrativo::with('pessoa')->where('id_encargos_administrativos',$id)->first();\n        $encargo = $encargoObj->toArray();\n        $encargo['inicio'] = $encargoObj->getOriginal('inicio')->format('Y-m-d');\n        $encargo['fim'] = ($encargoObj->fim) ? $encargoObj->getOriginal('fim')->format('Y-m-d') : null;\n        \n        return Inertia::render('Sigaa/EncargoAdministrativo/Edit', [\n            'tiposDeEncargos' => $tiposDeEncargos,\n            'funcoes' => $this->funcoes,\n            'encargo' => $encargo\n        ]);\n\n    }\n\n    public function update(RequestEncargoAdministrativo $request, int $id){\n        \n        $data = $request->all();\n        $user = Auth::user();\n        $arquivo_portaria = null;\n        if ($request->hasFile('arquivo_portaria')) {\n            $arquivo_portaria = $request->file('arquivo_portaria')->store('arquivo_portaria', 'public');\n        }\n\n        $docente['id_unidade'] = $user->usuario->id_unidade;\n        $docente['id'] = $user->usuario->id_pessoa;\n\n        $encargo = [\n            'id_tipo_encargo_administrativo' => $data['tipo_encargo_administrativo_id'],\n            'inicio' => $data['inicio'],\n            'fim' => $data['fim'],\n            'funcao' => (is_array($data['funcao'])) ? $data['funcao']['descricao'] : $data['funcao'],\n            'portaria' => $data['portaria'],\n            'arquivo_portaria' => $arquivo_portaria,\n            'id_unidade' => $docente['id_unidade'],\n            'ch_semanal' => $data['ch_semanal'],\n            'id_servidor' => $docente['id'],\n            'data_cadastro' => date('Y-m-d '),\n            'username' => $user->email\n        ];\n        \n        EncargoAdministrativo::where('id',$id)->update($encargo);\n\n        return Redirect::route('saad.encargoAdministrativo.index');\n    }\n\n    public function destroy($id):RedirectResponse{\n\n        $encargoAdmin = EncargoAdministrativo::findOrFail($id);\n        $encargoAdmin->delete();\n\n        return Redirect::route('encargos-administrativos.index');\n    }\n\n    private function getUnidade(){\n        return Unidade::all()->map(function ($unidade) {\n            return [\n                'id' => $unidade->id_unidade,\n                'nome' => $unidade?->nome\n            ];\n        });\n    }\n\n    private function getServidor(){\n        return Servidor::with('pessoa')\n            ->orderBy('id_servidor', 'DESC')\n            ->get()\n            ->map(function ($servidor) {\n                return [\n                    'id' => $servidor->id_servidor,\n                    'nome' => $servidor?->pessoa?->nome\n                ];\n            });\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/Http/Controllers/Sigaa/EncargoAdministrativoController.php b/app/Http/Controllers/Sigaa/EncargoAdministrativoController.php
+--- a/app/Http/Controllers/Sigaa/EncargoAdministrativoController.php	(revision f2254a6e39154cac103aeae014b11617482a3e12)
++++ b/app/Http/Controllers/Sigaa/EncargoAdministrativoController.php	(date 1707312015763)
+@@ -41,14 +41,14 @@
+         if (request('search')) {
+             $encargos= $encargos->whereHas('pessoa', function($query){
+                 $query->where('nome', 'ilike', request('search').'%');
+-            });  
++            });
+         }
+-        $encargos = $encargos->orderBy('id_encargos_administrativos', 'DESC')                        
++        $encargos = $encargos->orderBy('id_encargos_administrativos', 'DESC')
+                             ->paginate(100)
+                             ->withQueryString()
+                             ->through(function ($encargoAdmins) {
+                                 return [
+-                                    'id' => $encargoAdmins->id_encargos_administrativos,                    
++                                    'id' => $encargoAdmins->id_encargos_administrativos,
+                                     'docente' => $encargoAdmins?->pessoa?->nome,
+                                     'unidade' => $encargoAdmins?->unidade?->nome,
+                                     'inicio' => $encargoAdmins->inicio->format('d/m/Y'),
+@@ -59,7 +59,7 @@
+                                     'ch_semanal' => $encargoAdmins?->ch_semanal,
+                                     'id_tipo_encargo_administrativo' => $encargoAdmins->id_tipo_encargo_administrativo
+                                 ];
+-                            });            
++                            });
+ 
+         return Inertia::render('Sigaa/EncargoAdministrativo/Index', [
+             'encargos' => $encargos,
+@@ -68,27 +68,27 @@
+     }
+ 
+     public function create(): Response
+-    {        
+-        $tiposDeEncargos = TipoEncargoAdministrativo::orderBy('descricao','ASC')->get();        
++    {
++        $tiposDeEncargos = TipoEncargoAdministrativo::orderBy('descricao','ASC')->get();
+ 
+         return Inertia::render('Sigaa/EncargoAdministrativo/Create', [
+-            'tiposDeEncargos' => $tiposDeEncargos, 
++            'tiposDeEncargos' => $tiposDeEncargos,
+             'funcoes' => $this->funcoes
+         ]);
+     }
+-
++dkjskisjjis teste de teste os testes
+ 
+     public function store(RequestEncargoAdministrativo $request): RedirectResponse
+     {
+         $data = $request->all();
+-        
++
+         $user = Auth::user();
+         $arquivo_portaria = null;
+         if ($request->hasFile('arquivo_portaria')) {
+             $arquivo_portaria = $request->file('arquivo_portaria')->store('arquivo_portaria', 'public');
+         }
+         if(!isset($data['docentes'])){
+-            
++
+             $docente['id_unidade'] = $user->usuario->id_unidade;
+             $docente['id'] = $user->usuario->id_pessoa;
+ 
+@@ -105,7 +105,7 @@
+                 'data_cadastro' => date('Y-m-d '),
+                 'username' => $user->email
+             ];
+-            
++
+             EncargoAdministrativo::create($encargo);
+         }else{
+             foreach($data['docentes'] as $docente){
+@@ -126,19 +126,19 @@
+                 EncargoAdministrativo::create($encargo);
+             }
+         }
+-        
++
+         return Redirect::route('encargos-administrativos.index');
+     }
+ 
+     public function edit(int $id): Response
+     {
+-        $tiposDeEncargos = TipoEncargoAdministrativo::orderBy('descricao','ASC')->get();                
+-        
++        $tiposDeEncargos = TipoEncargoAdministrativo::orderBy('descricao','ASC')->get();
++
+         $encargoObj = EncargoAdministrativo::with('pessoa')->where('id_encargos_administrativos',$id)->first();
+         $encargo = $encargoObj->toArray();
+         $encargo['inicio'] = $encargoObj->getOriginal('inicio')->format('Y-m-d');
+         $encargo['fim'] = ($encargoObj->fim) ? $encargoObj->getOriginal('fim')->format('Y-m-d') : null;
+-        
++
+         return Inertia::render('Sigaa/EncargoAdministrativo/Edit', [
+             'tiposDeEncargos' => $tiposDeEncargos,
+             'funcoes' => $this->funcoes,
+@@ -148,7 +148,7 @@
+     }
+ 
+     public function update(RequestEncargoAdministrativo $request, int $id){
+-        
++
+         $data = $request->all();
+         $user = Auth::user();
+         $arquivo_portaria = null;
+@@ -172,7 +172,7 @@
+             'data_cadastro' => date('Y-m-d '),
+             'username' => $user->email
+         ];
+-        
++
+         EncargoAdministrativo::where('id',$id)->update($encargo);
+ 
+         return Redirect::route('saad.encargoAdministrativo.index');
