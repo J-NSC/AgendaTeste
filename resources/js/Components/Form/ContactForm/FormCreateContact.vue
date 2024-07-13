@@ -3,28 +3,44 @@ import {ref} from 'vue';
 import {useForm} from "@inertiajs/vue3";
 import {Form} from "vee-validate";
 
-const select = ref('select');
-const gender = ref(['True', 'False']);
-
 const form = useForm({
-  name: '',
-  phone: '',
-  email: '',
-  address: '',
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    image: null,
 });
 
-const submit = () => {
-  form.post(route('contato.store'), {
-    onFinish: () => form.reset(
-        'name',
-        'phone',
-        'email',
-        'address',
-    )
-  })
+const handleFileUpload = (event: Event) => {
+    const file = (event.target as HTMLInputElement).files?.[0] || null;
+    form.image = file;
 };
 
+const submit = () => {
+    const formData = new FormData();
+    formData.append('name', form.name);
+    formData.append('phone', form.phone);
+    formData.append('email', form.email);
+    formData.append('address', form.address);
+    if (form.image) {
+        formData.append('image', form.image);
+    }
+
+    form.post(route('contato.store'), {
+        onFinish: () => form.reset(
+            'name',
+            'phone',
+            'email',
+            'address',
+            'image'
+        ),
+        data: formData,
+        transform: (data) => formData,
+        preserveState: true,
+    });
+};
 </script>
+
 
 <template>
   <Form @submit="submit" v-slot="{ errors, isSubmitting }" class="mt-5">
@@ -45,6 +61,10 @@ const submit = () => {
           <v-col cols="12" md="6">
             <v-label class="mb-2 font-weight-medium">Endereço</v-label>
             <v-text-field variant="outlined" color="primary" v-model="form.address"/>
+          </v-col>
+          <v-col cols="12">
+            <v-label class="mb-2 font-weight-medium">Imagem</v-label>
+            <input type="file" @change="handleFileUpload"/>
           </v-col>
         </v-row>
         <v-btn color="error" class="mr-3">Cancelar</v-btn>

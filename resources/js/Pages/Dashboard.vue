@@ -30,6 +30,7 @@ const props = defineProps({
                             <v-table class="month-table">
                                 <thead>
                                 <tr>
+                                    <th></th>
                                     <th>NOME</th>
                                     <th>EMAIL</th>
                                     <th>TELEFONE</th>
@@ -39,6 +40,10 @@ const props = defineProps({
                                 </thead>
                                 <tbody>
                                 <tr v-for="contato in contacts" :key="contato.id">
+                                    <td>
+                                        <img v-if="contato.image_path" :src="contato.image_path" alt="Imagem do Contato" width="50" height="50" />
+                                        <span v-else>Nenhuma imagem</span>
+                                    </td>
                                     <td>{{ contato.name }}</td>
                                     <td>{{ contato.email }}</td>
                                     <td>{{ contato.phone }}</td>

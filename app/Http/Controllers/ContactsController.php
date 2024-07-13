@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ContactRequest;
 use App\Models\Contacts;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class ContactsController extends Controller
 {
     public function index(): Response{
         $user = Auth::user();
-        $contacts = Contacts::all();
+        $contacts = $user->contacts;
         return Inertia::render('Dashboard',[
             'contacts' => $contacts,
         ]);
@@ -28,18 +29,25 @@ class ContactsController extends Controller
         return Inertia::render('Contact/Create');
     }
 
-    public function store(ContactRequest $request):RedirectResponse{
+    public function store(ContactRequest $request): RedirectResponse
+    {
         $contact = $request->validated();
         $contact['user_id'] = auth()->id();
+
+        if ($request->hasFile('image')) {
+            $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath())->getSecurePath();
+            $contact['image_path'] = $uploadedFileUrl;
+        }
 
         DB::beginTransaction();
         try {
             Contacts::create($contact);
             DB::commit();
-        }catch (Exception $e){
+        } catch (Exception $e) {
             DB::rollBack();
             dd($e);
         }
+
         return Redirect::route('dashboard');
     }
 
@@ -51,9 +59,15 @@ class ContactsController extends Controller
         ]);
     }
 
-    public function update(ContactRequest $request, $id): RedirectResponse
-    {
+    public function update(ContactRequest $request, $id): RedirectResponse {
         $contactData = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath())->getSecurePath();
+            $contactData['image_path'] = $uploadedFileUrl;
+
+        }
+
         DB::beginTransaction();
         try {
             $contact = Contacts::findOrFail($id);
@@ -66,7 +80,6 @@ class ContactsController extends Controller
 
         return Redirect::route('dashboard');
     }
-
     public function destroy($id): RedirectResponse
     {
         $contact = Contacts::findOrFail($id);
