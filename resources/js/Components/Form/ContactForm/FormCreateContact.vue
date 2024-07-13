@@ -14,7 +14,7 @@ const form = useForm({
 });
 
 const submit = () => {
-  form.post(route('agenda.store'), {
+  form.post(route('contato.store'), {
     onFinish: () => form.reset(
         'name',
         'phone',

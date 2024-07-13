@@ -11,7 +11,7 @@ class ContactRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,7 @@ class ContactRequest extends FormRequest
     {
         return [
             //
-//            'user_id'=> 'required',
+
             'name' => 'required',
             'phone' => 'required',
             'email' => 'required',

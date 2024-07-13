@@ -43,7 +43,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-//    public function contacts(){
-//        return $this->hasMany(Contacts::class);
-//    }
+    public function contacts(){
+        return $this->hasMany(Contacts::class);
+    }
 }

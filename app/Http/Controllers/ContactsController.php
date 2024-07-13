@@ -16,7 +16,7 @@ use Inertia\Response;
 class ContactsController extends Controller
 {
     public function index(): Response{
-//        $user = Auth::user();
+        $user = Auth::user();
         $contacts = Contacts::all();
         return Inertia::render('Dashboard',[
             'contacts' => $contacts,
@@ -29,16 +29,58 @@ class ContactsController extends Controller
     }
 
     public function store(ContactRequest $request):RedirectResponse{
-//        $contact = $request->validated();
-////        $contact['user_id'] = auth()->id();
-//        DB::beginTransaction();
-//        try {
-//            Contacts::create($contact);
-//            DB::commit();
-//        }catch (Exception $e){
-//            DB::rollBack();
-//            dd($e);
-//        }
+        $contact = $request->validated();
+        $contact['user_id'] = auth()->id();
+
+        DB::beginTransaction();
+        try {
+            Contacts::create($contact);
+            DB::commit();
+        }catch (Exception $e){
+            DB::rollBack();
+            dd($e);
+        }
         return Redirect::route('dashboard');
     }
+
+    public function edit($id):Response
+    {
+        $contact = Contacts::findOrFail($id);
+        return Inertia::render('Contact/Edit',[
+            'contact' => $contact,
+        ]);
+    }
+
+    public function update(ContactRequest $request, $id): RedirectResponse
+    {
+        $contactData = $request->validated();
+        DB::beginTransaction();
+        try {
+            $contact = Contacts::findOrFail($id);
+            $contact->update($contactData);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            dd($e);
+        }
+
+        return Redirect::route('dashboard');
+    }
+
+    public function destroy($id): RedirectResponse
+    {
+        $contact = Contacts::findOrFail($id);
+
+        DB::beginTransaction();
+        try {
+            $contact->delete();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            dd($e);
+        }
+
+        return redirect()->route('dashboard');
+    }
+
 }

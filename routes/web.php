@@ -25,19 +25,23 @@ Route::get('/register', function () {
     return redirect()->route('register');
 });
 
-
+//Route::resource('contato', ContactsController::class)
+//    ->only(['create','store', 'edit','update', 'destroy'])
+//    ->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [ContactsController::class, 'index'])->name('dashboard');
     Route::get('/contato', [ContactsController::class, 'create'])->name('contato.create');
+    Route::get('/contato/{id}', [ContactsController::class, 'edit'])->name('contato.edit');
     Route::post('/contato', [ContactsController::class, 'store'])->name('contato.store');
-    Route::post('/agenda', [ContactsController::class,'store'])->name('agenda.store');
+    Route::put('/contato/{id}', [ContactsController::class, 'update'])->name('contato.update');
+    Route::delete('/contato/{id}', [ContactsController::class, 'destroy'])->name('contato.destroy');
+
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
 });
 
 //Route::get('/dashboard', [ContactsController::class, 'index'])->middleware('auth')->name('dashboard');

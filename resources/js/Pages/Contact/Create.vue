@@ -3,6 +3,7 @@
 import FormCriarPlano from "@/Components/Form/ContactForm/FormCreateContact.vue";
 import FullLayout from "@/Layouts/full/FullLayout.vue";
 import UiParentCard from "@/Components/shared/UiParentCard.vue";
+import FormCreateContact from "@/Components/Form/ContactForm/FormCreateContact.vue";
 
 
 </script>
@@ -29,8 +30,7 @@ import UiParentCard from "@/Components/shared/UiParentCard.vue";
               </div>
               <hr class="v-divider v-theme--ORANGE_THEME" aria-orientation="horizontal" role="separator">
               <div class="v-card-text">
-                  {{ $page.props.auth }}
-                <FormCriarPlano/>
+                <FormCreateContact/>
               </div>
             </div>
           </div>
