@@ -23,7 +23,7 @@ const customizer = useCustomizerStore();
             ]"
         >
             <Customizer />
-            <VerticalSidebarVue v-if="!customizer.setHorizontalLayout" />
+<!--            <VerticalSidebarVue v-if="!customizer.setHorizontalLayout" />-->
             <VerticalHeaderVue v-if="!customizer.setHorizontalLayout" />
             <HorizontalHeader v-if="customizer.setHorizontalLayout" />
             <HorizontalSidebar v-if="customizer.setHorizontalLayout" />

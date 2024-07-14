@@ -25,10 +25,6 @@ Route::get('/register', function () {
     return redirect()->route('register');
 });
 
-//Route::resource('contato', ContactsController::class)
-//    ->only(['create','store', 'edit','update', 'destroy'])
-//    ->middleware(['auth', 'verified']);
-
 Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [ContactsController::class, 'index'])->name('dashboard');

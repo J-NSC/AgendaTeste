@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import {ref} from 'vue';
-import {useForm} from "@inertiajs/vue3";
-import {Form} from "vee-validate";
+import { ref } from 'vue';
+import {Link, useForm} from "@inertiajs/vue3";
+import { Form } from "vee-validate";
+import { Inertia } from '@inertiajs/inertia';
 
 const props = defineProps({
     contact: Object
@@ -15,24 +16,12 @@ const form = useForm({
 });
 
 const submit = () => {
-  form.put(route('contato.update', props.contact.id), {
-    onFinish: () => form.reset(
-        'name',
-        'phone',
-        'email',
-        'address'
-    )
-  })
+    form.put(route('contato.update', props.contact.id), {
+        onFinish: () => form.reset('name', 'phone', 'email', 'address')
+    });
 };
 
 </script>
-
-<!--<v-col cols="12">-->
-<!--<v-label class="mb-2 font-weight-medium">Descricao</v-label>-->
-<!--<v-text-field variant="outlined" color="primary" v-model="form.descricao"/>-->
-<!--</v-col>-->
-
-
 
 <template>
     <Form @submit="submit" v-slot="{ errors, isSubmitting }" class="mt-5">
@@ -55,8 +44,8 @@ const submit = () => {
                         <v-text-field variant="outlined" color="primary" v-model="form.address"/>
                     </v-col>
                 </v-row>
-                <v-btn color="error" class="mr-3">Cancelar</v-btn>
-                <v-btn color="primary" :loading="isSubmitting" type="submit" >Adicinar</v-btn>
+                <v-btn color="error" class="mr-3" >Cancelar</v-btn>
+                <v-btn color="primary" :loading="isSubmitting" type="submit">Editar</v-btn>
             </v-col>
         </v-row>
     </Form>

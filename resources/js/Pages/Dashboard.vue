@@ -17,14 +17,15 @@ const props = defineProps({
     <FullLayout>
         <v-row>
             <v-col cols="12">
-                <UiParentCard title="Contatos">
-                    <Link method="get"
-                          :href="route('contato.create')"
-                          type="button"
-                          class="v-btn v-btn--elevated v-theme--ORANGE_THEME bg-secondary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-10 v-btn-se">
-                        Adicionar Contato
-                    </Link>
-
+                <UiParentCard>
+                    <v-col cols="12" lg="12" md="6" class="text-right">
+                            <Link method="get"
+                            :href="route('contato.create')"
+                            type="button"
+                            class="v-btn v-btn--elevated v-theme--ORANGE_THEME bg-secondary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-10 v-btn-se">
+                            Adicionar Contato
+                            </Link>
+                    </v-col>
                     <div class="mx-auto sm:px-6 lg:px-8">
                         <v-card class="border" elevation="0">
                             <v-table class="month-table">
